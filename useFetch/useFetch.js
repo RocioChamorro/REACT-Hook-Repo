@@ -4,9 +4,30 @@ const useFetch = (url) => {
   const isMounted = useRef(true);
   const [state, setState] = useState({
     data: null,
-    loading: true,
-    error: null,
+    isLoading: true,
+    hasError: null,
   });
+
+  getFetch = () => {
+    setState({
+      ...state,
+      isLoading: true,
+    });
+
+    fetch(url)
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (isMounted.current) {
+          setState({
+            isLoading: false,
+            hasError: null,
+            data,
+          });
+        } else {
+          console.log("setState no se llamó")
+        }
+      });
+  }
 
   useEffect(() => {
     console.log("nieto")
@@ -17,25 +38,7 @@ const useFetch = (url) => {
   }, []);
 
   useEffect(() => {
-    setState({
-      data: null,
-      loading: true,
-      error: null,
-    });
-
-    fetch(url)
-      .then((resp) => resp.json())
-      .then((data) => {
-        if (isMounted.current) {
-          setState({
-            loading: false,
-            error: null,
-            data,
-          });
-        } else {
-          console.log("setState no se llamó")
-        }
-      });
+   getFetch();
   }, [url]);
   return state;
 };

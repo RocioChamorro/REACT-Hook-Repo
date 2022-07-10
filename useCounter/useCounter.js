@@ -8,6 +8,7 @@ const useCounter = (initialState = 10) => {
   };
 
   const decrement = (factor = 1) => {
+    if (counter === 0) return;
     setState(state - factor);
   };
 
